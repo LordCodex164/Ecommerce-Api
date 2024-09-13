@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const crypto = require("crypto-js")
+const crypto = require("crypto-js");
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function() {
-    console.log("this.password", this.password);
     const hashedPassword = crypto.AES.encrypt(this.password, process.env.SECRET_KEY).toString();
     this.password = hashedPassword;
 });

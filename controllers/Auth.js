@@ -30,9 +30,7 @@ const login = async (req, res, next) => {
        if(!user) {
            throw new unAuthenticated('No user with that email');
        }
-       console.log("user", user);
        const isPasswordCorrect = await user.matchPasswords(password);
-       console.log(isPasswordCorrect)
        if(!isPasswordCorrect) {
            throw new unAuthenticated('Incorrect password');
        }

@@ -9,11 +9,24 @@ const auth = require("./routes/auth")
 const errorMiddleware = require('./middlewares/error-handler');
 const isAuth = require('./middlewares/isAuth');
 const product = require('./routes/product');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require("express-rate-limit")
+const xss = require('xss-clean');
 
+app.use(express.json());
+app.use(cors());
+app.use(helmet());
+app.use(xss());
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: "Too many requests from this IP, please try again after 15 minutes"
+})
+app.use(limiter);
 app.get('/', (req, res) => {
     res.send('Hello World')
 });
-app.use(express.json());
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/products', isAuth, product);
 app.use(notFound);

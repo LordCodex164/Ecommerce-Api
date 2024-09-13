@@ -23,7 +23,7 @@ const getProducts = async (req, res, next) => {
         res.status(StatusCodes.OK).json({products});
     } catch (error) {
         next(error);
-    }   
+    }
 }
 
 const getAllProducts = async (req, res, next) => {
