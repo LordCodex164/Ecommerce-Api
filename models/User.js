@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const brcrypt = require('bcryptjs');
+const crypto = require("crypto-js")
 const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
@@ -16,14 +16,15 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minLength: [6, 'Password must be at least 6 characters']
+        minLength: [6, 'Password must be at least 6 characters'],
+        maxLength: [100, 'Password must be at most 12 characters']
     }
 });
 
-userSchema.pre('save', async function(next) {
-    const salt = await brcrypt.genSalt(10);
-    await brcrypt.hash(this.password, salt)
-    next();
+userSchema.pre('save', async function() {
+    console.log("this.password", this.password);
+    const hashedPassword = crypto.AES.encrypt(this.password, process.env.SECRET_KEY).toString();
+    this.password = hashedPassword;
 });
 
 userSchema.methods.createJwtToken = function() {
@@ -33,7 +34,8 @@ userSchema.methods.createJwtToken = function() {
 }
 
 userSchema.methods.matchPasswords = async function(password) {
-    return await brcrypt.compare(password, this.password);
+   const decryptedPassword = crypto.AES.decrypt(this.password, process.env.SECRET_KEY).toString(crypto.enc.Utf8);
+   return password === decryptedPassword;
 }
 
 const User = mongoose.model('User', userSchema);

@@ -13,13 +13,15 @@ const isAuth = async (req, res, next) => {
 
     try{
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
         const user= await User.findById(decoded.id);
+        if(!user) {
+            throw new unAuthenticated('User not found');
+        }
         req.user = {id: user._id, email: user.email};
         next();
     }
-    catch{
-        throw new unAuthenticated('Invalid credentials');
+    catch(error) {
+        throw new unAuthenticated('Invalid credential');
     }
 }
 

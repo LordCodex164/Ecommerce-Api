@@ -3,30 +3,22 @@ const BadRequest = require('../errors/badRequest');
 const unAuthenticated = require('../errors/unAuthenticated');
 const {StatusCodes} = require('http-status-codes');
 
-const register = async (req, res) => {
+const register = async (req, res, next) => {
     const {name, email, password} = req.body;
-
     if(!name || !email || !password) {
         throw new BadRequest('All fields are required');
     }
-
     try {
-        const user = await User.create({name, email, password});
+        const user = await User.create({...req.body});
         const token = user.createJwtToken();
-        await user.save();
-        res.cookie("access_token", token, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 3000,
-            sameSite: "None",
-            secure: true,
-          });
         res.status(StatusCodes.CREATED).json({user, token});
+        
     } catch (error) {
-        res.status(400).json({error: error.message});
+        next(error)
     }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
     const {email, password} = req.body;
 
     if(!email || !password) {
@@ -36,18 +28,21 @@ const login = async (req, res) => {
     try {
        const user = await User.findOne({email}); 
        if(!user) {
-           throw new unAuthenticated('Invalid credentials');
+           throw new unAuthenticated('No user with that email');
        }
+       console.log("user", user);
        const isPasswordCorrect = await user.matchPasswords(password);
+       console.log(isPasswordCorrect)
        if(!isPasswordCorrect) {
-           throw new unAuthenticated('Invalid credentials');
+           throw new unAuthenticated('Incorrect password');
        }
        const token = user.createJwtToken();
         res.status(200).json({user, token});
     }
-    catch{
 
+    catch (error){
+       next(error)
     }
 }
 
-module.exports = {register, login};
+module.exports = {register, login}

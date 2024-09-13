@@ -16,6 +16,10 @@ const productSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         required: [true, 'Quantity is required'],
+    },
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     }
 });
 
