@@ -25,7 +25,7 @@ const limiter = rateLimit({
 })
 app.use(limiter);
 app.get('/', (req, res) => {
-    res.send('Hello World')
+    res.send('<h1>Welcome to the E-commerce API</h1> <h2>API Endpoints</h2>');
 });
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/products', isAuth, product);
