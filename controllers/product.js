@@ -53,7 +53,6 @@ const getProducts = async (req, res, next) => {
         let filters = filter.replace(reGex, (match) => `-${operatorMap[match]}-`);
         const options = ['price', 'quantity'];
         filters = filters.split(",").forEach((item) => {
-            console.log(`item`, item)
             const [field, operator, value] = item.split('-');
             if(options.includes(field)){
                 queryObject[field] = {[operator] : Number(value)}
@@ -82,9 +81,6 @@ const getProducts = async (req, res, next) => {
     const limit = Number(req.query.limit) || 10;
 
     const totalProducts = await Product.countDocuments(queryObject);
-
-    console.log(totalProducts)
-
 
     try {
         const products = await results; 
