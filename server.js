@@ -17,7 +17,7 @@ const xss = require('xss-clean');
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-app.use(xss());
+//app.use(xss());
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
