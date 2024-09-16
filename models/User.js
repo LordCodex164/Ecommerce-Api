@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require("crypto-js");
 const jwt = require('jsonwebtoken');
+const {createJwtToken} = require('../utils');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -18,6 +19,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Password is required'],
         minLength: [6, 'Password must be at least 6 characters'],
         maxLength: [100, 'Password must be at most 12 characters']
+    },
+    role:{
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
 });
 
@@ -27,9 +33,7 @@ userSchema.pre('save', async function() {
 });
 
 userSchema.methods.createJwtToken = function() {
-    return jwt.sign({id: this._id, email: this.email}, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES
-    });
+    return createJwtToken(this._id, this.email);
 }
 
 userSchema.methods.matchPasswords = async function(password) {

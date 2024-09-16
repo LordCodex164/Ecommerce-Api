@@ -14,12 +14,11 @@ const isAuth = async (req, res, next) => {
 
     try{
         const decoded = isTokenValid(token);
-        const user= await User.findById(decoded.id).select("-password");
-        console.log("decodeduser>>>", user)
+        const user= await User.findById(decoded.id);
         if(!user) {
             throw new unAuthenticated('User not found');
         }
-        req.user = {id: user._id, email: user.email, role: user.role};
+        req.user = {id: user._id, email: user.email};
         next();
     }
     catch(error) {

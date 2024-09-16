@@ -9,7 +9,7 @@ const errorMiddleware = (err, req, res, next) => {
         customErrorObj.statusCode = 404;
     }
     if(err.code === 11000) {
-        customErrorObj.message = 'Duplicate value entered';
+        customErrorObj.message = '  Email has already been taken';
         customErrorObj.statusCode = 400;
     }
     if(err.name === "ValidationError") {

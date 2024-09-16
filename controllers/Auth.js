@@ -4,12 +4,12 @@ const unAuthenticated = require('../errors/unAuthenticated');
 const {StatusCodes} = require('http-status-codes');
 
 const register = async (req, res, next) => {
-    const {name, email, password} = req.body;
+    const {name, email, password, isAdmin} = req.body;
     if(!name || !email || !password) {
         throw new BadRequest('All fields are required');
     }
     try {
-        const user = await User.create({...req.body});
+        const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user'});
         const token = user.createJwtToken();
         res.status(StatusCodes.CREATED).json({user, token});
         
