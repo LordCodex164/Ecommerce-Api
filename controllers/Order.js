@@ -87,5 +87,5 @@ const updateOrders = async (req, res, next) => {
 module.exports = {
     createOrder,
     getOrders,
-    
+    updateOrders
 }
