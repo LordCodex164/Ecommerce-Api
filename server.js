@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/products', isAuth, product);
 app.use('/api/v1/orders', isAuth, order);
-app.use('/api/v1/users', isAuth, User);
+app.use('/api/v1/user', isAuth, User);
 app.use(notFound);
 app.use(errorMiddleware);
 
