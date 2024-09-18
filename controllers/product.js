@@ -5,8 +5,6 @@ const {StatusCodes} = require('http-status-codes');
 const createProduct = async (req, res, next) => {
     const {title, description, price, quantity} = req.body;
 
-    console.log("user", req.user)
-
     if(!title || !description || !price || !quantity) {
        
         throw new badRequest('All Product fields are required');

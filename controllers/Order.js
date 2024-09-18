@@ -68,7 +68,21 @@ const getOrders = async (req, res, next) => {
     }
 }
 
-const updateOrders = async (req, res, next) => {
+const getOrder = async (req, res, next) => {
+    const {id} = req.params;
+    try {
+        const order = await Order.findOne({_id: id, customer: req.user.id}).populate('products');
+        if(!order) {
+            return res.status(400).json({message: "Order not found"});
+        }
+        res.status(200).json({order});
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+const updateOrder = async (req, res, next) => {
     const {id} = req.params;
     const {status, tax, amount, paymentIntent} = req.body;
 
@@ -83,9 +97,19 @@ const updateOrders = async (req, res, next) => {
     }
 }
 
+const deleteOrder = async (req, res, next) => {
+    const {id} = req.params;
+    try {
+        const order = await Order.findOneAndDelete({_id: id, customer: req.user.id});
+    } catch (error) {
+        next(error);
+    }
+}
 
 module.exports = {
     createOrder,
     getOrders,
-    updateOrders
+    getOrder,
+    updateOrder,
+    deleteOrder
 }
