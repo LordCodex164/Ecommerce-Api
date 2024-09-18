@@ -6,18 +6,19 @@ dotenv.config();
 const notFound = require('./errors/not-found');
 require("express-async-errors")
 const auth = require("./routes/auth")
-const errorMiddleware = require('./middlewares/error-handler');
-const isAuth = require('./middlewares/isAuth');
 const product = require('./routes/product');
+const order = require('./routes/order');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit")
 const xss = require('xss-clean');
-
+const {isAuth} = require('./middlewares/isAuth');
+const errorMiddleware = require('./middlewares/error-handler');
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 //app.use(xss());
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/products', isAuth, product);
+app.use('/api/v1/orders', isAuth, order);
 app.use(notFound);
 app.use(errorMiddleware);
 

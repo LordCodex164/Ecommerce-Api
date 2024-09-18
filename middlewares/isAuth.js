@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/Auth');
 const unAuthenticated = require('../errors/unAuthenticated');
 const {isTokenValid} = require('../utils/jwt');
 
@@ -15,7 +15,6 @@ const isAuth = async (req, res, next) => {
     try{
         const decoded = isTokenValid(token);
         const user= await User.findById(decoded.id).select("-password");
-        console.log("decodeduser>>>", user)
         if(!user) {
             throw new unAuthenticated('User not found');
         }
@@ -27,4 +26,16 @@ const isAuth = async (req, res, next) => {
     }
 }
 
-module.exports = isAuth;
+const authorizePermissions = (...roles) => {
+    return (req, res, next) => {
+        if(!roles.includes(req.user.role)) {
+            throw new unAuthenticated('Not Authorized to access this route');
+        }
+        next();
+    }
+}
+
+module.exports = {
+    isAuth,
+    authorizePermissions
+};

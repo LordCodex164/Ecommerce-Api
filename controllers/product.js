@@ -1,7 +1,6 @@
 const Product = require('../models/Product');
 const {badRequest}  = require('../errors');
 const {StatusCodes} = require('http-status-codes');
-const {checkAdminPermissions} = require('../utils');
 
 const createProduct = async (req, res, next) => {
     const {title, description, price, quantity} = req.body;
@@ -16,7 +15,7 @@ const createProduct = async (req, res, next) => {
     try {
         const product = await Product.create({...req.body, createdBy: req.user.id});
         console.log("productId", product._id)
-        checkAdminPermissions(req.user); 
+        //checkAdminPermissions(req.user); 
         res.status(StatusCodes.CREATED).json({product});
 
     } catch (error) {

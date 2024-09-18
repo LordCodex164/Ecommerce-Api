@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/Auth');
 const BadRequest = require('../errors/badRequest');
 const unAuthenticated = require('../errors/unAuthenticated');
 const {StatusCodes} = require('http-status-codes');
