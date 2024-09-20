@@ -24,10 +24,20 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    verificationToken: String,
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    passwordTokenExpirationDate: Date,
+    passwordToken: {
+        type: String
     }
 });
 
 userSchema.pre('save', async function() {
+    console.log(this.isModified('password'));
     const hashedPassword = crypto.AES.encrypt(this.password, process.env.SECRET_KEY).toString();
     this.password = hashedPassword;
 });

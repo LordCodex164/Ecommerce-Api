@@ -6,7 +6,6 @@ const createProduct = async (req, res, next) => {
     const {title, description, price, quantity} = req.body;
 
     if(!title || !description || !price || !quantity) {
-       
         throw new badRequest('All Product fields are required');
     }
 

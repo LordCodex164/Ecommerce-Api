@@ -17,8 +17,7 @@ const createOrder = async (req, res, next) => {
             return res.status(400).json({message: "Product Price and Quantity are required"});
         }
         const dbProduct = await Product.findOne({_id: product._id});
-        console.log("dbProduct", dbProduct);
-
+        
         if(!dbProduct) {
             return res.status(400).json({message: `Product not found`});
         }
@@ -38,7 +37,7 @@ const createOrder = async (req, res, next) => {
 
   const paymentIntent = await fakeStripeApi({
         amount: total,
-        currency: 'usd',
+        currency: 'usd'
   });
 
   const order = await Order.create({
