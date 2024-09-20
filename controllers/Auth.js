@@ -6,7 +6,9 @@ const sendVerificationEmail = require('../utils/sendVerficationEmail');
 const crypto = require("crypto");
 const sendPostEmail = require("../services/mailer");
 const sendPostMarkEmail = require('../services/mailer');
-const {LOGIN_TOKEN} = require("../helpers/mail_template_helper")
+const {LOGIN_TOKEN} = require("../helpers/mail_template_helper");
+const { badRequest } = require('../errors');
+const createToken = require('../helpers/createToken');
 
 const register = async (req, res, next) => {
     const {name, email, password, isAdmin} = req.body;
@@ -50,7 +52,8 @@ const verifyEmail = async (req, res, next) => {
         throw new BadRequest('Invalid Token');
     }
    try {
-    let user = User.findOne({email})
+    let user = await User.findOne({email})
+    console.log("User", user)
    if(!user){
      throw new unAuthenticated("Validation failed")
    }
@@ -58,15 +61,14 @@ const verifyEmail = async (req, res, next) => {
      throw new unAuthenticated("Validation Error: Incorrect token")
    }
 
-   (user.verfied = new Date.now()), (user.isVerified = true)
+   (user.verfied = Date.now()), (user.isVerified = true)
    user.verificationToken = ""
 
    await user.save()
    res.status(200).json({msg: "Email verified successfully"})
    } catch (error) {
       next(error)
-   }
-   
+   }  
 }
 
 const login = async (req, res, next) => {
@@ -94,8 +96,27 @@ const login = async (req, res, next) => {
     }
 }
 
+const resendOtp = async(req, res, next) => {
+    const {email} = req.body
+    if(!email){
+        throw new badRequest("Please provide email")
+    }
+    try {
+      const user = await User.findOne({email})
+      if(!user){
+        throw new unAuthenticated("User not found")
+      }
+      const token = createToken()
+      console.log("token", token)
+      res.status(200).json({msg: "token sent successfully"})
+    } catch (error) {
+      next(error)
+    }
+}
+
 module.exports = {
     register, 
     login,
-    verifyEmail
+    verifyEmail,
+    resendOtp
 }
