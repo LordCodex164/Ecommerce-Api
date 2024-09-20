@@ -44,7 +44,8 @@ const register = async (req, res, next) => {
 };
 
 const verifyEmail = async (req, res, next) => {
-    const {verificationToken, email} = req.params;
+    console.log("req.body", req.body)
+    const {verificationToken, email} = req.body;
     if(!verificationToken) {
         throw new BadRequest('Invalid Token');
     }
