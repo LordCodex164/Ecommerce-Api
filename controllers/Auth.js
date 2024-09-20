@@ -9,6 +9,11 @@ const sendPostMarkEmail = require('../services/mailer');
 const {LOGIN_TOKEN} = require("../helpers/mail_template_helper");
 const { badRequest } = require('../errors');
 const createToken = require('../helpers/createToken');
+const sendOtpEmail = require('../utils/sendOtpMail');
+const argon2 = require("argon2")
+const { randomBytes } = require("crypto")
+
+const salt = randomBytes(32);
 
 const register = async (req, res, next) => {
     const {name, email, password, isAdmin} = req.body;
@@ -23,7 +28,6 @@ const register = async (req, res, next) => {
             throw new BadRequest('Email already exists');
         }
         const verificationToken = crypto.randomBytes(40).toString('hex');
-        console.log("Verification Token: ", verificationToken);
         const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user', verificationToken});
         console.log(user);
         const token = user.createJwtToken();
@@ -108,7 +112,14 @@ const resendOtp = async(req, res, next) => {
       }
       const token = createToken()
       console.log("token", token)
-      res.status(200).json({msg: "token sent successfully"})
+      const hashedToken = await argon2.hash(token, { salt });
+      await sendOtpEmail({
+        email: user.email,
+        token,
+        origin: "localhost:8080",
+        name: user.name
+     })
+      res.status(200).json({msg: "token sent successfully", hashedToken})
     } catch (error) {
       next(error)
     }
