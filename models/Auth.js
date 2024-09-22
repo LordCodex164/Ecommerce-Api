@@ -18,14 +18,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Password is required'],
         minLength: [6, 'Password must be at least 6 characters'],
-        maxLength: [100, 'Password must be at most 12 characters']
     },
     role:{
         type: String,
         enum: ['user', 'admin'],
         default: 'user'
     },
-    verificationToken: String,
     isVerified: {
         type: Boolean,
         default: false
@@ -33,11 +31,15 @@ const userSchema = new mongoose.Schema({
     passwordTokenExpirationDate: Date,
     passwordToken: {
         type: String
+    },
+    last_login_date: {
+        type: Date
     }
 });
 
-userSchema.pre('save', async function() {
+userSchema.pre('save', async function(next) {
     console.log(this.isModified('password'));
+    if(!this.isModified("password")) return next();
     const hashedPassword = crypto.AES.encrypt(this.password, process.env.SECRET_KEY).toString();
     this.password = hashedPassword;
 });
