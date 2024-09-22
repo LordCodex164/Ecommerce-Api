@@ -1,9 +1,10 @@
-const { isTokenValid, createJwtToken } = require("./jwt");
+const { isTokenValid, createJwtToken, attachCookiesToResponse } = require("./jwt");
 const checkAdminPermissions = require("./checkPermissions"); 
 
 module.exports = {
     isTokenValid,
     createJwtToken,
-    checkAdminPermissions
+    checkAdminPermissions,
+    attachCookiesToResponse
 };
 

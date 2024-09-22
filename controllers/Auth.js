@@ -11,6 +11,8 @@ const sendOtpEmail = require('../utils/sendOtpMail');
 const sendSuccessEmail = require('../utils/sendSuccessEmail');
 const argon2 = require("argon2")
 const { randomBytes } = require("crypto")
+const {attachCookiesToResponse} = require("../utils")
+const Token = require('../models/Token');
 
 const salt = randomBytes(32);
 
@@ -102,8 +104,39 @@ const login = async (req, res, next) => {
        if(!isPasswordCorrect) {
            throw new unAuthenticated('Incorrect password');
        }
-       const token = user.createJwtToken();
-        res.status(200).json({user, token});
+
+       // res.status(200).json({user, token});
+
+       let refreshToken = ""
+
+       const existingToken = await Token.findOne({user: user._id})
+
+       if(existingToken){
+           const {isValid} = existingToken
+           if(!isValid){
+            throw new unAuthenticated("Invalid Credentials")
+           }
+           refreshToken = existingToken.refreshToken
+           attachCookiesToResponse(res, refreshToken, user)
+           res.status(200).json({user, refreshToken})
+           return;
+       }
+
+        refreshToken = crypto.randomBytes(40).toString('hex');
+        const userAgent = req.headers['user-agent'];
+        const ip = req.ip;
+
+        const tokenRecord = await Token.create({
+            ip,
+            userAgent,
+            user: user._id,
+            refreshToken
+        })
+
+        await tokenRecord.save()
+        attachCookiesToResponse(res, refreshToken, user)
+        res.status(200).json({user, refreshToken})
+
     }
 
     catch (error){

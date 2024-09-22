@@ -12,12 +12,14 @@ const User = require('./routes/user');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit")
+const cookieParser = require('cookie-parser');
 const xss = require('xss-clean');
 const {isAuth} = require('./middlewares/isAuth');
 const errorMiddleware = require('./middlewares/error-handler');
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
+app.use(cookieParser("cookieSecret"));
 //app.use(xss());
 
 const limiter = rateLimit({
