@@ -144,6 +144,20 @@ const editProduct = async (req, res, next) => {
     }   
 }
 
+const uploadProductImage = async (req, res, next) => {
+    const {id} = req.params;
+    const {id: userId} = req.user;
+    if(!req.files){
+      throw new badRequest('No file uploaded');
+    }
+    try{
+       const product = Product.findOne({_id: id, createdBy: userId});
+    }
+    catch(error){
+        next(error)
+    }
+}
+
 const deleteProduct = async (req, res, next) => {
     const {id: userId} = req.user;
     const {id} = req.params;

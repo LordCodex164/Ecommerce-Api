@@ -10,11 +10,17 @@ const isAuth = async (req, res, next) => {
         throw new unAuthenticated('Not Authorized to access this route'); 
     }
 
+    console.log("authorization", authorization);
+
     const token = authorization.split(' ')[1];
+
+    console.log("token", token)
 
     try{
         const decoded = isTokenValid(token);
+        console.log("decoded", decoded);
         const user= await User.findById(decoded.id).select("-password");
+        console.log("user", user); 
         if(!user) {
             throw new unAuthenticated('User not found');
         }
@@ -22,7 +28,7 @@ const isAuth = async (req, res, next) => {
         next();
     }
     catch(error) {
-        throw new unAuthenticated('Invalid credential');
+        throw new unAuthenticated('Invalid credentials');
     }
 }
 

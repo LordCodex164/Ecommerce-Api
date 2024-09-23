@@ -7,4 +7,5 @@ router.post('/register', register);
 router.post("/verify_email", verifyEmail);
 router.post("/resend_otp", resendOtp)
 
+
 module.exports = router;

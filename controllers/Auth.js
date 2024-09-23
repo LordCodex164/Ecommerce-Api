@@ -11,7 +11,7 @@ const sendOtpEmail = require('../utils/sendOtpMail');
 const sendSuccessEmail = require('../utils/sendSuccessEmail');
 const argon2 = require("argon2")
 const { randomBytes } = require("crypto")
-const {attachCookiesToResponse} = require("../utils")
+const {attachCookiesToResponse, createJwtToken} = require("../utils")
 const Token = require('../models/Token');
 
 const salt = randomBytes(32);
@@ -24,21 +24,23 @@ const register = async (req, res, next) => {
     
     try {
         const userExists = await User.findOne({email});
-        console.log(userExists);
         if(userExists) {
             throw new BadRequest('Email already exists');
         }
         const otpToken = createToken();
         const hashedToken = await argon2.hash(otpToken, { salt });
-        //const verificationToken = crypto.randomBytes(40).toString('hex');
+        
         const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user', passwordToken: hashedToken, passwordTokenExpirationDate: new Date(new Date().getTime() + 10 * 60000) });
+        console.log("user", user)
+        const verificationToken = createJwtToken({payload: {id: user._id, email: user.email, role: user.role}});
+        console.log("verificationToken", verificationToken)
          await sendVerificationEmail({
             email: user.email,
             token: otpToken,
             origin: "localhost:8080",
             name: user.name
          })
-        res.status(StatusCodes.CREATED).json({user, token: hashedToken, message: "Please check your email to verify your account"});
+        res.status(StatusCodes.CREATED).json({user, token: verificationToken, message: "Please check your email to verify your account"});
         
     } catch (error) {
         next(error)

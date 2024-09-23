@@ -34,6 +34,9 @@ const userSchema = new mongoose.Schema({
     },
     last_login_date: {
         type: Date
+    },
+    profilePicture: {
+        type: String
     }
 });
 
