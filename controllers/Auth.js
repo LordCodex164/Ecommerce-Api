@@ -33,7 +33,7 @@ const register = async (req, res, next) => {
         const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user', passwordToken: hashedToken, passwordTokenExpirationDate: new Date(new Date().getTime() + 10 * 60000) });
 
         console.log("user", user)
-        
+
         const verificationToken = createJwtToken({payload: {id: user._id, email: user.email, role: user.role}});
         console.log("verificationToken", verificationToken)
          await sendVerificationEmail({
@@ -103,6 +103,9 @@ const login = async (req, res, next) => {
        const user = await User.findOne({email}); 
        if(!user) {
            throw new unAuthenticated('No user with that email');
+       }
+       if(!user.isVerified){
+              throw new unAuthenticated("Please verify your email")
        }
        const isPasswordCorrect = await user.matchPasswords(password);
        if(!isPasswordCorrect) {
