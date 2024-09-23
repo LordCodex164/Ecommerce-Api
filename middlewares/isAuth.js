@@ -9,7 +9,7 @@ const isAuth = async (req, res, next) => {
     if(!authorization || !authorization.startsWith('Bearer')) {
         throw new unAuthenticated('Not Authorized to access this route'); 
     }
-
+    
     const token = authorization.split(' ')[1];
 
     try{

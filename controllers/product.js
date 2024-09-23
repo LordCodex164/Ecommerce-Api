@@ -1,6 +1,8 @@
 const Product = require('../models/Product');
 const {badRequest}  = require('../errors');
 const {StatusCodes} = require('http-status-codes');
+const cloudinary = require("../utils/cloudinary");
+const errorMiddleware = require('../middlewares/error-handler');
 
 const createProduct = async (req, res, next) => {
     const {title, description, price, quantity} = req.body;
@@ -17,6 +19,34 @@ const createProduct = async (req, res, next) => {
 
     } catch (error) {
         next(error);
+    }
+}
+
+const uploadProductImage = async (req, res, next) => {
+    const {id} = req.params;
+    if(!req.file){
+      throw new badRequest('No file uploaded');
+    }
+    if(!req.file.mimetype.startsWith('image')){
+        throw new badRequest('Please upload an image file');
+    }
+    const maxSize = 1024 * 1024;
+  if (req.file.size > maxSize) {
+    throw new CustomError.BadRequestError('Please upload image smaller 1MB');
+  }
+    try{
+      cloudinary.uploader.upload(req.file.path, async (error, result) => {
+        if(error) {
+          throw new badRequest('Error uploading image');
+        }
+        console.log(req.file.path);
+        const product = await Product.findByIdAndUpdate(id, {image: result.secure_url}, {new: true});
+        res.status(StatusCodes.OK).json({product});
+      })
+      
+    }
+    catch(error){
+        next(error)
     }
 }
 
@@ -144,19 +174,6 @@ const editProduct = async (req, res, next) => {
     }   
 }
 
-const uploadProductImage = async (req, res, next) => {
-    const {id} = req.params;
-    const {id: userId} = req.user;
-    if(!req.files){
-      throw new badRequest('No file uploaded');
-    }
-    try{
-       const product = Product.findOne({_id: id, createdBy: userId});
-    }
-    catch(error){
-        next(error)
-    }
-}
 
 const deleteProduct = async (req, res, next) => {
     const {id: userId} = req.user;
@@ -177,7 +194,8 @@ const deleteProduct = async (req, res, next) => {
 }
 
 module.exports = {
-    createProduct, 
+    createProduct,
+    uploadProductImage, 
     getProducts, 
     getAllProducts,
     getProduct,

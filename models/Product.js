@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const singleCommentSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    comment: {
+        type: String,
+        required: true
+    }
+},{timestamps: true});
+
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -23,7 +34,13 @@ const productSchema = new mongoose.Schema({
     },
     image: {
         type: String,
+        default: "https://res.cloudinary.com/dzv6v9kaf/image/upload/v1632197446/ecommerce/placeholder"
     },
+    comments: {
+        type: Array,
+        default: [],
+        comments: [singleCommentSchema]
+    }
 },{timestamps: true});
 
 module.exports = mongoose.model('Product', productSchema);
