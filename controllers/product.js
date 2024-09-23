@@ -31,9 +31,9 @@ const uploadProductImage = async (req, res, next) => {
         throw new badRequest('Please upload an image file');
     }
     const maxSize = 1024 * 1024;
-  if (req.file.size > maxSize) {
-    throw new CustomError.BadRequestError('Please upload image smaller 1MB');
-  }
+    if (req.file.size > maxSize) {
+        throw new CustomError.BadRequestError('Please upload image smaller 1MB');
+    }
     try{
       cloudinary.uploader.upload(req.file.path, async (error, result) => {
         if(error) {

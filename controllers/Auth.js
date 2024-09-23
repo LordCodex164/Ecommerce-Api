@@ -32,10 +32,8 @@ const register = async (req, res, next) => {
         
         const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user', passwordToken: hashedToken, passwordTokenExpirationDate: new Date(new Date().getTime() + 10 * 60000) });
 
-        console.log("user", user)
+        const verificationToken = createJwtToken({payload: {id: user._id, email: user.email, role: user.role, isVerified: user.isVerified}});
 
-        const verificationToken = createJwtToken({payload: {id: user._id, email: user.email, role: user.role}});
-        console.log("verificationToken", verificationToken)
          await sendVerificationEmail({
             email: user.email,
             token: otpToken,
