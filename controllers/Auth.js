@@ -31,7 +31,9 @@ const register = async (req, res, next) => {
         const hashedToken = await argon2.hash(otpToken, { salt });
         
         const user = await User.create({...req.body, role: isAdmin ? 'admin' : 'user', passwordToken: hashedToken, passwordTokenExpirationDate: new Date(new Date().getTime() + 10 * 60000) });
+
         console.log("user", user)
+        
         const verificationToken = createJwtToken({payload: {id: user._id, email: user.email, role: user.role}});
         console.log("verificationToken", verificationToken)
          await sendVerificationEmail({
