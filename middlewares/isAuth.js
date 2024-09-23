@@ -18,6 +18,9 @@ const isAuth = async (req, res, next) => {
         if(!user) {
             throw new unAuthenticated('User not found');
         }
+        if(!user.isVerified){
+            throw new unAuthenticated('Please verify your email');
+        }
         req.user = {id: user._id, email: user.email, role: user.role};
         next();
     }
