@@ -12,6 +12,8 @@ const isAuth = async (req, res, next) => {
     
     const token = authorization.split(' ')[1];
 
+    console.log("token", token);
+
     try{
         const decoded = isTokenValid(token);
         const user= await User.findById(decoded.id).select("-password");
@@ -22,12 +24,12 @@ const isAuth = async (req, res, next) => {
         if(!user.isVerified){
             throw new unAuthenticated('Please verify your email');
         }
-        
+
         req.user = {id: user._id, email: user.email, role: user.role};
         next();
     }
     catch(error) {
-        throw new unAuthenticated('Invalid credentials');
+        throw new unAuthenticated('Invalid credential');
     }
 }
 

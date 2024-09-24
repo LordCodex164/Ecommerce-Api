@@ -5,7 +5,11 @@ const singleCommentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    comment: {
+    name: {
+        type: String,
+        required: true
+    },
+    title:{
         type: String,
         required: true
     }
@@ -36,11 +40,18 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: "https://res.cloudinary.com/dzv6v9kaf/image/upload/v1632197446/ecommerce/placeholder"
     },
-    comments: {
-        type: Array,
-        default: [],
-        comments: [singleCommentSchema]
-    }
-},{timestamps: true});
+    totalComments: {
+        type: Number,
+        default: 0
+    },
+    comments: [singleCommentSchema]
+},{timestamps: true, toJSON: {virtuals: true}, toObject: {virtuals: true}});
+
+// productSchema.virtual('comments', {
+//     ref: 'Comment',
+//     localField: '_id',
+//     foreignField: 'product',
+//     justOne: false
+// });
 
 module.exports = mongoose.model('Product', productSchema);

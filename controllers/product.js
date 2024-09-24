@@ -23,7 +23,6 @@ const createProduct = async (req, res, next) => {
 }
 
 const uploadProductImage = async (req, res, next) => {
-    const {id} = req.params;
     if(!req.file){
       throw new badRequest('No file uploaded');
     }
@@ -202,4 +201,3 @@ module.exports = {
     editProduct, 
     deleteProduct
 };
-

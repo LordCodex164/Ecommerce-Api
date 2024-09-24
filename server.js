@@ -9,6 +9,7 @@ const auth = require("./routes/auth")
 const product = require('./routes/product');
 const order = require('./routes/order');
 const User = require('./routes/user');
+const comment = require('./routes/comment');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require("express-rate-limit")
@@ -35,6 +36,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/products', isAuth, product);
 app.use('/api/v1/orders', isAuth, order);
 app.use('/api/v1/user', isAuth, User);
+app.use('/api/v1/comments', isAuth, comment);
 app.use(notFound);
 app.use(errorMiddleware);
 
