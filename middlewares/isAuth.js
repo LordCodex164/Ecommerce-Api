@@ -12,8 +12,6 @@ const isAuth = async (req, res, next) => {
     
     const token = authorization.split(' ')[1];
 
-    console.log("token", token);
-
     try{
         const decoded = isTokenValid(token);
         const user= await User.findById(decoded.id).select("-password");

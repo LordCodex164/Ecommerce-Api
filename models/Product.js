@@ -40,10 +40,6 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: "https://res.cloudinary.com/dzv6v9kaf/image/upload/v1632197446/ecommerce/placeholder"
     },
-    totalComments: {
-        type: Number,
-        default: 0
-    },
     comments: [singleCommentSchema]
 },{timestamps: true, toJSON: {virtuals: true}, toObject: {virtuals: true}});
 

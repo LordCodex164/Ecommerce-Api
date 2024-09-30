@@ -43,7 +43,8 @@ commentSchema.statics.calculateTotalComments = async function(productId){
    if(stats.length > 0){
      try{
       await this.model('Product').findByIdAndUpdate(productId, {
-        comments: stats[0]?.allComments
+        comments: stats[0]?.allComments,
+        totalComments: stats[0]?.allComments.length
       }, {new: true});
      }
      catch(error){
