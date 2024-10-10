@@ -5,15 +5,9 @@ const cloudinary = require("../utils/cloudinary");
 const errorMiddleware = require('../middlewares/error-handler');
 
 const createProduct = async (req, res, next) => {
-    const {title, description, price, quantity} = req.body;
-
-    if(!title || !description || !price || !quantity) {
-        throw new badRequest('All Product fields are required');
-    }
 
     try {
         const product = await Product.create({...req.body, createdBy: req.user.id});
-        console.log("productId", product._id)
         //checkAdminPermissions(req.user); 
         res.status(StatusCodes.CREATED).json({product});
 
