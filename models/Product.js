@@ -32,6 +32,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'Quantity is required'],
     },
+    category: {
+        type: String,
+        required: [true, 'Category is required'],
+        enum: ['electronics', 'books', 'clothing', 'other']
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -39,6 +44,19 @@ const productSchema = new mongoose.Schema({
     image: {
         type: String,
         default: "https://res.cloudinary.com/dzv6v9kaf/image/upload/v1632197446/ecommerce/placeholder"
+    },
+    brand: String,
+    model: String,
+    color: String,
+    weight: String,
+    author: String,
+    publisher: String,
+    publication_date: Date,
+    size: String,
+    material: String,
+    isDeleted: {
+        type: Boolean,
+        default: false
     },
     comments: [singleCommentSchema]
 },{timestamps: true, toJSON: {virtuals: true}, toObject: {virtuals: true}});
