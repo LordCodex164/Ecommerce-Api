@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/Auth');
+const User = require('../models/auth/auth');
 const unAuthenticated = require('../errors/unAuthenticated');
 const {isTokenValid} = require('../utils/jwt');
 

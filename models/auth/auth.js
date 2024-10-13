@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require("crypto-js");
 const jwt = require('jsonwebtoken');
-const {createJwtToken} = require('../utils');
+const {createJwtToken} = require('../../utils');
 
 const userSchema = new mongoose.Schema({
     name: {

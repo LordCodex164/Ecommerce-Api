@@ -1,4 +1,4 @@
-const User = require('../models/Auth');
+const User = require('../models/auth/auth');
 const BadRequest = require('../errors/badRequest');
 const unAuthenticated = require('../errors/unAuthenticated');
 const {StatusCodes} = require('http-status-codes');
@@ -12,7 +12,7 @@ const sendSuccessEmail = require('../utils/sendSuccessEmail');
 const argon2 = require("argon2")
 const { randomBytes } = require("crypto")
 const {attachCookiesToResponse, createJwtToken} = require("../utils")
-const Token = require('../models/Token');
+const Token = require('../models/token/token');
 
 const salt = randomBytes(32);
 

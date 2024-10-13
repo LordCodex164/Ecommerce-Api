@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+const Product = require('../models/product/product');
 const {badRequest}  = require('../errors');
 const {StatusCodes} = require('http-status-codes');
 const cloudinary = require("../utils/cloudinary");

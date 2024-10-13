@@ -1,4 +1,4 @@
-const Comment = require('../models/comment');
+const Comment = require('../models/comment/comment');
 const {badRequest}  = require('../errors');
 const {StatusCodes} = require('http-status-codes');
 const {checkUserPermissions} = require('../utils/checkUserPermissions');

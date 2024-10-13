@@ -39,7 +39,19 @@ const orderSchema = new mongoose.Schema({
     paymentIntent: {
         type: String,
         required: true
-    }
+    },
+    createdBy: {
+        type: String,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    status:{
+        type: String,
+        enum: ['pending', 'processing', 'completed', 'cancelled', 'refunded', 'failed'],
+        default: 'pending'
+    },
 }, {timestamps: true});
 
 const Cart = mongoose.model('order', orderSchema);
